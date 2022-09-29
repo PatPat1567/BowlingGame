@@ -1,0 +1,86 @@
+﻿@using FrontEnd.Data
+@inject GameService gameService
+
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">1</th>
+                <th scope="col">2</th>
+                <th scope="col">3</th>
+                <th scope="col">4</th>
+                <th scope="col">5</th>
+                <th scope="col">6</th>
+                <th scope="col">7</th>
+                <th scope="col">8</th>
+                <th scope="col">9</th>
+                <th scope="col">10</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Roll Values</th>
+                @foreach(var frame in game.Frames)
+                {
+                    <td class="frame">
+                    @foreach(var roll in frame.Rolls)
+                    {
+                        <div class="roll-value">
+                            @roll.Value
+                        </div> 
+                        <br />
+                    }
+                    </td>
+                }
+            </tr>
+            <tr>
+                <th scope="row">Frame Score</th>
+                @foreach(var frame in game.Frames)
+                {
+                    <td class="frame-score">
+                        @frame.Points
+                    </td>
+                }
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="game-score">
+    Game Score: @game.Score
+</div>
+
+<div>
+    <button class="roll btn btn-primary" @onclick="Roll">Roll Ball</button>
+    <button class="restart btn btn-danger" @onclick="Restart">Restart Game</button>
+    <button class="simulate btn btn-secondary" @onclick="Simulate">Simulate Game</button>
+</div>
+
+@code {
+    private Game game = new Game();
+    private Random random = new Random();
+
+    protected override void OnInitialized()
+    {
+        game = gameService.GetCurrentGame();
+    }
+
+    private void Roll()
+    {
+        game = gameService.RollBall();
+    }
+
+    private void Restart()
+    {
+        game = gameService.RestartGame();
+    }
+
+    private void Simulate()
+    {
+        while(!game.IsGameOver)
+        {
+            game = gameService.RollBall();
+        }
+    }
+}
